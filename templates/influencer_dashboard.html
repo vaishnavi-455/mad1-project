@@ -1,0 +1,103 @@
+{% extends "index.html" %}
+{% block content %}
+<h1>Influencer Dashboard</h1>
+<div class="d-flex justify-content-between align-items-center">
+  <h2 class="my-4">Ad Requests</h2>
+  <div>
+    <a href="{{ url_for('search_campaigns') }}" class="btn btn-primary">Search Campaigns</a>
+  </div>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Campaign Name</th>
+      <th>Requirements</th>
+      <th>Payment Amount</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for ad_request in ad_requests %}
+    <tr>
+      <td>{{ ad_request.campaign.name }}</td>
+      <td>{{ ad_request.requirements }}</td>
+      <td>${{ ad_request.payment_amount }}</td>
+      <td>{{ ad_request.status }}</td>
+      <td>
+        {% if ad_request.status == 'pending' %}
+        <a href="{{ url_for('respond_request', ad_request_id=ad_request.id, action='accept') }}"
+          class="btn btn-success btn-sm">Accept</a>
+        <a href="{{ url_for('respond_request', ad_request_id=ad_request.id, action='reject') }}"
+          class="btn btn-danger btn-sm">Reject</a>
+        <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal"
+          data-bs-target="#negotiateModal{{ ad_request.id }}">Propose Payment</button>
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+          data-bs-target="#detailsModal{{ ad_request.id }}">
+          View Details
+        </button>
+        {% endif %}
+        {% if ad_request.status == 'accepted' %}
+        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+          data-bs-target="#detailsModal{{ ad_request.id }}">
+          View Details
+        </button>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% for ad_request in ad_requests %}
+<div class="modal fade" id="detailsModal{{ ad_request.id }}" tabindex="-1" role="dialog"
+  aria-labelledby="detailsModalLabel{{ ad_request.id }}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="detailsModalLabel{{ ad_request.id }}">Ad Request Details</h5>
+      </div>
+      <div class="modal-body">
+        <p><strong>Campaign Name:</strong> {{ ad_request.campaign.name }}</p>
+        <p><strong>Status:</strong> {{ ad_request.status }}</p>
+        <p><strong>Requirements:</strong> {{ ad_request.requirements }}</p>
+        <p><strong>Budget:</strong>{{ad_request.budget}}</p>
+        <p><strong>Payment Amount:</strong> {{ ad_request.payment_amount }}</p>
+        <p><strong>Start Date:</strong>{{ ad_request.campaign.startdate.strftime('%Y-%m-%d') }}</p>
+        <p><strong>End Date:</strong>{{ ad_request.campaign.enddate.strftime('%Y-%m-%d') }}</p>
+        <!-- {% if ad_request.proposed_amount %}
+        <p><strong>Proposed Amount:</strong> {{ ad_request.proposed_amount }}</p>
+        {% endif %} -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="negotiateModal{{ ad_request.id }}" tabindex="-1" role="dialog"
+  aria-labelledby="negotiateModalLabel{{ ad_request.id }}" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="negotiateModalLabel{{ ad_request.id }}">Negotiate Payment</h5>
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="{{ url_for('propose_payment', ad_request_id=ad_request.id) }}">
+          <div class="form-group">
+            <label for="proposed_amount">Proposed Payment Amount:</label>
+            <input type="number" id="proposed_amount" name="proposed_amount" step="0.01" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Send Proposal</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+{% endblock %}

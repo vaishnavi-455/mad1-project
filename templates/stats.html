@@ -1,0 +1,88 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Stats</h1>
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <h2 class="text-center mb-3">User Statistics</h2>
+            <div style="height: 300px;">
+                <canvas id="userPieChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <h2 class="text-center mb-3">Campaign Statistics</h2>
+            <div style="height: 300px;">
+                <canvas id="campaignPieChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var sponsors = {{ sponsors }};
+    var influencers = {{ influencers }};
+    var accepted = {{ accepted }};
+    var rejected = {{ rejected }};
+
+    var ctx = document.getElementById('userPieChart').getContext('2d');
+    var userPieChart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: ['Sponsors', 'Influencers'],
+            datasets: [{
+                label: 'User Roles',
+                data: [sponsors, influencers],
+                backgroundColor: ['#235284', '#26874e'],
+                borderColor: ['#235284', '#26874e'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    var cty = document.getElementById('campaignPieChart').getContext('2d');
+    var campaignPieChart = new Chart(cty, {
+        type: 'pie',
+        data: {
+            labels: ['Accepted Adrequests', 'Rejected Adrequests'],
+            datasets: [{
+                label: 'Campaign Status',
+                data: [accepted, rejected],
+                backgroundColor: ['#235284', '#26874e'],
+                borderColor: ['#235284', '#26874e'],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function (tooltipItem) {
+                            return tooltipItem.label + ': ' + tooltipItem.raw;
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

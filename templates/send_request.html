@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Ad Request</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    {% extends "index.html" %}
+
+    {% block content %}
+    <div class="container mt-5">
+        <div class="campaign-details mb-4">
+            
+            <div class="card">
+                <div class="card-body">
+                    <h3>Campaign Details</h3>
+                    <p><strong>Name:</strong> {{ campaign.name }}</p>
+                    <p><strong>Budget:</strong> ${{ campaign.budget }}</p>
+                    <p><strong>Visibility:</strong> {{ campaign.visibility }}</p>
+                    <p><strong>Goals:</strong> {{ campaign.goals }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="container mt-5 d-flex justify-content-center mb-3">
+            <div class="w-75 p-4 border border-2 border-dark rounded-2" style="max-width: 800px;">
+                <div class="fw-bold fs-4 mb-4 text-center border-bottom pb-2">
+                    Send Ad Request
+                </div>
+                <form method="POST">
+                    <div class="form-group mb-4">
+                        <label for="influencer_id">Select Influencer:</label>
+                        <select id="influencer_id" name="influencer_id" class="form-control form-control-lg" required>
+                            {% for influencer in influencers %}
+                            <option value="{{ influencer.id }}">{{ influencer.username }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <textarea id="requirements" name="requirements" class="form-control"
+                            placeholder="Describe your requirements here" style="height: 150px;" required></textarea>
+                        <label for="requirements">Requirements:</label>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input type="number" id="payment_amount" name="payment_amount" step="0.01"
+                            class="form-control form-control-lg" placeholder="Payment Amount" required>
+                        <label for="payment_amount">Payment Amount</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Send Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    {% endblock %}
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

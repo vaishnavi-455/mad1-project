@@ -1,0 +1,122 @@
+{% extends "index.html" %}
+{% block content %}
+
+<h1>Sponsor Dashboard</h1>
+<div class="d-flex justify-content-between align-items-center">
+    <h2 class="my-4">Campaigns</h2>
+    <div>
+        <a href="{{ url_for('create_campaign') }}" class="btn btn-primary">Create New Campaign</a>
+        <a href="{{url_for('viewinfluencers')}}" class="btn btn-primary">View Influencers</a>
+    </div>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Campaign Name</th>
+            <th>Budget</th>
+            <th>Visibility</th>
+            <th>Goals</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Accepted Influencers</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for campaign in campaigns %}
+        <tr>
+            <td>{{ campaign.name }}</td>
+            <td>{{ campaign.budget }}</td>
+            <td>{{ campaign.visibility }}</td>
+            <td>{{ campaign.goals }}</td>
+            <td>{{ campaign.startdate.strftime('%Y-%m-%d') }}</td>
+            <td>{{ campaign.enddate.strftime('%Y-%m-%d') }}</td>
+            <td>
+                {% if accepted_influencers[campaign.id] %}
+                <ul>
+                    {% for influencer in accepted_influencers[campaign.id] %}
+                    <li>{{ influencer }}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                No influencers accepted yet
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('send_request', campaign_id=campaign.id) }}" class="btn btn-primary btn-sm">Send Ad
+                    Request</a>
+                <a href="{{ url_for('update_campaign', campaign_id=campaign.id) }}"
+                    class="btn btn-secondary btn-sm">Update</a>
+                <a href="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" class="btn btn-danger btn-sm"
+                    onclick="return confirm('Are you sure you want to delete this campaign?')">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<h2>Ad Requests</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Campaign Name</th>
+            <th>Influencer</th>
+            <th>Requirements</th>
+            <th>Payment Amount</th>
+            <th>Proposed Amount</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for ad_request, influencer_username in ad_requests %}
+        <tr>
+            <td>{{ ad_request.campaign.name }}</td>
+            <td>{{ influencer_username }}</td>
+            <td>{{ ad_request.requirements }}</td>
+            <td>{{ ad_request.payment_amount }}</td>
+            <td>{{ ad_request.proposed_amount if ad_request.proposed_amount else 'N/A' }}</td>
+            <td>{{ ad_request.status }}</td>
+            <td>
+                {% if ad_request.status == 'under_negotiation' %}
+                <a href="{{ url_for('accept_payment_proposal', ad_request_id=ad_request.id) }}"
+                    class="btn btn-success">Accept Proposal</a>
+                <a href="{{ url_for('reject_payment_proposal', ad_request_id=ad_request.id) }}"
+                    class="btn btn-warning">Reject Proposal</a>
+                {% endif %}
+                <button type="button" class="btn btn-info" data-bs-toggle="modal"
+                    data-bs-target="#negotiateModal{{ ad_request.id }}">Negotiate Payment</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Negotiation Modals -->
+{% for ad_request, _ in ad_requests %}
+<div class="modal fade" id="negotiateModal{{ ad_request.id }}" tabindex="-1" role="dialog"
+    aria-labelledby="negotiateModalLabel{{ ad_request.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="negotiateModalLabel{{ ad_request.id }}">Negotiate Payment</h5>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('propose_payment', ad_request_id=ad_request.id) }}">
+                    <div class="form-floating">
+                        <input type="number" id="proposed_amount" name="proposed_amount" step="0.01"
+                        class="form-control" placeholder="Proposed Payment Amount" required>
+                        <label htmlfor="proposed_amount">Proposed Payment Amount:</label>
+                    </div>
+                    <div class="flex mt-3">
+                    <button type="submit" class="btn btn-primary">Send Proposal</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

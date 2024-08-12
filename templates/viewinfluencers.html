@@ -1,0 +1,41 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="border border-2 border-black rounded-2 p-2" style="max-width: 540px; min-width: 320px;">
+        <div class='fw-bold fs-5 mb-3 border-bottom border-2 border-black text-center'>
+            Search Influencers
+        </div>
+    <form method="POST">
+        <div class="form-floating mb-3">
+            <input type="text" id="search" name="search" class="form-control" placeholder="Search by username or niche" required>
+            <label htmlfor="search" class="form-label">Search by username or niche</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="number" id="min_followers" name="min_followers" class="form-control" placeholder="Minimum followers" min="0">
+            <label htmlfor="min_followers" class="form-label">Minimum followers</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="number" id="max_followers" name="max_followers" class="form-control" placeholder="Maximum followers" min="0">
+            <label htmlfor="max_followers" class="form-label">Max followers</label>
+        </div>
+        <div class="d-flex justify-content-center">
+            <button type="submit" class="btn btn-dark mt-3">Search</button>
+        </div>
+    </form>
+    </div>
+</div>
+    <div class="row mt-4 d-flex justify-content-center">
+        {% for influencer in influencers %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">{{ influencer.username }}</h4>
+                    <p class="card-text"><strong>Niche:</strong> {{ influencer.niche }}</p>
+                    <p class="card-text"><strong>Followers:</strong> {{ influencer.followers }} followers</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "index.html" %}
+{% block content %}
+    <h1>Admin Dashboard</h1>
+    
+    <h2>Users</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Flagged</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>{{ user.flagged }}</td>
+                    <td>
+                        {% if user.flagged %}
+                            <a href="{{ url_for('unflag_user', user_id=user.id) }}" class="btn btn-warning btn-sm">Unflag</a>
+                        {% else %}
+                            <a href="{{ url_for('flag_user', user_id=user.id) }}" class="btn btn-danger btn-sm">Flag</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <h2>Campaigns</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Campaign Name</th>
+                <th>Sponsor ID</th>
+                <th>Accepted Influencers</th>
+                <th>Budget</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campaign in campaigns %}
+                <tr>
+                    <td>{{ campaign.name }}</td>
+                    <td>{{ campaign.sponsorid }}</td>
+                    <td>{{ accepted_influencers[campaign.id] | join(', ') }}</td>
+                    <td>{{ campaign.budget }}</td>
+                    <td>
+                        <a href="{{ url_for('delete_campaign', campaign_id=campaign.id) }}" class="btn btn-danger btn-sm">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Ad Requests</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Influencer Name</th>
+                <th>Campaign Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ad_request, influencer_name in ad_requests %}
+                <tr>
+                    <td>{{ influencer_name }}</td>
+                    <td>{{ ad_request.campaign.name }}</td>
+                    <td>{{ ad_request.status }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#detailsModal{{ ad_request.id }}">
+                            View Details
+                        </button>
+                        <div class="modal fade" id="detailsModal{{ ad_request.id }}" tabindex="-1" role="dialog" aria-labelledby="detailsModalLabel{{ ad_request.id }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="detailsModalLabel{{ ad_request.id }}">Ad Request Details</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Influencer Name:</strong> {{ influencer_name }}</p>
+                                        <p><strong>Campaign Name:</strong> {{ ad_request.campaign.name }}</p>
+                                        <p><strong>Status:</strong> {{ ad_request.status }}</p>
+                                        <p><strong>Requirements:</strong> {{ ad_request.requirements }}</p>
+                                        <p><strong>Payment Amount:</strong> {{ ad_request.payment_amount }}</p>
+                                        {% if ad_request.proposed_amount %}
+                                            <p><strong>Proposed Amount:</strong> {{ ad_request.proposed_amount }}</p>
+                                        {% endif %}
+                                        <p><strong>Start Date:</strong>{{ ad_request.campaign.startdate.strftime('%Y-%m-%d') }}</p>
+                                        <p><strong>End Date:</strong>{{ ad_request.campaign.enddate.strftime('%Y-%m-%d') }}</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

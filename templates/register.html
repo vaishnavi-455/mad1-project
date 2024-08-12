@@ -1,0 +1,63 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="border border-2 border-black rounded-2 p-2" style="max-width: 540px; min-width: 320px;">
+        <div class='fw-bold fs-5 mb-3 border-bottom border-2 border-black text-center'>
+            Register
+        </div>
+        <form method="POST" action="" class="text-secondary">
+            <div class="form-floating mb-3 mt-5">
+                <input type="text" name="username" class="form-control" id="username" placeholder="Name" required>
+                <label for="username">Name</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+                <label for="email">Email</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                <label for="password">Password</label>
+            </div>
+            <div class="form-group mb-3">
+                <label for="role"><strong>Role</strong></label>
+                <select name="role" id="role" class="form-control" required>
+                    <option value="admin">Admin</option>
+                    <option value="sponsor">Sponsor</option>
+                    <option value="influencer">Influencer</option>
+                </select>
+            </div>
+            <div id="additional-fields"></div>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-dark mt-3">Register</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('role').addEventListener('change', function () {
+        var role = this.value;
+        var additionalFields = document.getElementById('additional-fields');
+        additionalFields.innerHTML = '';
+        if (role === 'sponsor') {
+            additionalFields.innerHTML = `
+                <div class="form-floating mb-3">
+                    <input type="text" name="industry" class="form-control" id="industry" placeholder="Industry" required>
+                    <label for="industry">Industry</label>
+                </div>
+            `;
+        } else if (role === 'influencer') {
+            additionalFields.innerHTML = `
+                <div class="form-floating mb-3">
+                    <input type="text" name="niche" class="form-control" id="niche" placeholder="Niche" required>
+                    <label for="niche">Niche</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="number" name="followers" class="form-control" id="followers" placeholder="Followers" required>
+                    <label for="followers">Followers</label>
+                </div>
+            `;
+        }
+    });
+</script>
+{% endblock %}

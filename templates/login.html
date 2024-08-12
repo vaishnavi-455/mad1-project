@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% block content %}
+<div class='d-flex justify-content-center'>
+    <div class=' border border-2 border-black rounded-2 p-2 '>
+        <div class='fw-bold fs-5 mb-3 border-bottom border-2 border-black text-center'>
+            Login
+        </div>
+        <form method="POST">
+            <div class="form-floating mb-3">
+                <input type="email" name="email" class="form-control" id="email" placeholder="Email" required>
+                <label htmlfor="email">Email</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" name="password" class="form-control" id="password" placeholder="Password"
+                    required>
+                <label htmlfor="password">Password</label>
+            </div>
+            <div class="d-flex justify-content-center align-items-center">
+                <button type="submit" class="btn btn-primary">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="border border-2 border-black rounded-2 p-2" style="max-width: 540px; min-width: 320px;">
+        <div class='fw-bold fs-5 mb-3 border-bottom border-2 border-black text-center'>
+            Search Campaigns
+        </div>
+    <form method="POST" action="{{ url_for('search_campaigns') }}">
+        <div class="form-floating mb-3">
+            <input type="text" name="search" class="form-control" placeholder="Search for campaigns" required>
+            <label htmlfor="search" class="form-label">Search for campaigns</label>
+            <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-dark mt-3">Search</button>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+    {% if campaigns %}
+    <div class="row mt-4">
+        <h3 class="text-center mb-2">Campaigns</h3>
+        <div class="row mt-4 d-flex justify-content-center" >
+            {% for campaign in campaigns %}
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ campaign.name }}</h5>
+                        <p class="card-text"><strong>Budget:</strong>{{ campaign.budget }}</p>
+                        <p class="card-text"><strong>Goals:</strong>{{ campaign.goals }}</p>
+                        <p class="card-text"><strong>Start Date:</strong>{{ campaign.startdate.strftime('%Y-%m-%d') }}</p>
+                        <p class="card-text"><strong>End Date:</strong>{{ campaign.enddate.strftime('%Y-%m-%d') }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

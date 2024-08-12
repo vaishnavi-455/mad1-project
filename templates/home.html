@@ -1,0 +1,12 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="container mt-4">    
+    <div class="card mb-4">
+        <div class="card-body text-center">
+            <a href="{{ url_for('login') }}" class="btn btn-primary mr-2">Login</a>
+            <a href="{{ url_for('register') }}" class="btn btn-success">Register</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
